@@ -12,7 +12,7 @@ st.title("Censo - Evasão dos Cursos")
 
 
 filtro_opcao = st.selectbox("Selecione um aspecto para analisar a evasão:", 
-                            ["Região", "UF"])
+                            ["Região", "UF", "Cidade"])
 
 
 if filtro_opcao == "Região":
@@ -23,6 +23,10 @@ elif filtro_opcao == "UF":
     filtro_valor = st.selectbox("Selecione uma UF:", censo["SG_UF"].unique())
     dados_filtrados = censo[censo["SG_UF"] == filtro_valor]
     filtro_titulo = f"Evasão dos Cursos na UF {filtro_valor}"
+elif filtro_opcao == "Cidade":
+    filtro_valor = st.selectbox("Selecione uma cidade:", censo["NO_MUNICIPIO"].unique())
+    dados_filtrados = censo[censo["NO_MUNICIPIO"] == filtro_valor]
+    filtro_titulo = f"Evasão dos Cursos em {filtro_valor}"
 
 else:
     filtro_valor = st.slider("Selecione uma faixa etária:", min_value=0, max_value=100, value=(0, 100))
