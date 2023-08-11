@@ -12,7 +12,7 @@ st.title("Censo - Evasão dos Cursos")
 
 
 filtro_opcao = st.selectbox("Selecione um aspecto para analisar a evasão:", 
-                            ["Região", "UF", "Cidade", "Curso"])
+                            ["Região", "UF", "Cidade", "Curso", "Idade"])
 
 
 if filtro_opcao == "Região":
