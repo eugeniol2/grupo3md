@@ -6,8 +6,8 @@ from scipy import stats
 
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
-censo2020 = pd.read_csv("data/censo2020_filtrado.CSV")
-censo2021 = pd.read_csv("data/censo2021_filtrado.CSV")
+censo2020 = pd.read_csv("data/censo2020_filtrado.csv")
+censo2021 = pd.read_csv("data/censo2021_filtrado.csv")
 
 def calcular_taxa_evasao(row, merged_data):
     M_n = row['QT_MAT_2021']
