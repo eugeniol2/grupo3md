@@ -1,5 +1,6 @@
 import streamlit as st
 
+
 def calcular_taxa_evasao(row):
     M_n = row["QT_MAT_2021"]
     In_n = row["QT_ING_2021"]
@@ -9,7 +10,7 @@ def calcular_taxa_evasao(row):
     if M_n_1 - Eg_n_1 == 0:
         return None
 
-    return 1-((M_n - In_n) / (M_n_1 - Eg_n_1)) 
+    return 1 - ((M_n - In_n) / (M_n_1 - Eg_n_1))
 
 
 def userCalculator():
@@ -23,5 +24,5 @@ def userCalculator():
     if M_n_1 - Eg_n_1 == 0:
         st.warning("Division by zero. Cannot calculate abandonment rate.")
     else:
-        abandonment_rate = 1-((M_n - In_n) / (M_n_1 - Eg_n_1))
+        abandonment_rate = 1 - ((M_n - In_n) / (M_n_1 - Eg_n_1))
         st.subheader(f"Resultado: {abandonment_rate:.2f}%")
