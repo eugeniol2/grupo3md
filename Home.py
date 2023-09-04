@@ -20,6 +20,7 @@ course_modality = ["Todos", "Presencial", "Curso a distância"]
 
 course_network = ["Todos", "Pública", "Privada"]
 
+
 # Filtros
 st.subheader(
     "Abaixo é possível regular alguns filtros para obter melhores observações:"
@@ -28,9 +29,15 @@ st.write(
     "Qual a taxa de evasão presente nos cursos?, a depender do tipo de organização, tipo de rede(pública ou privada), a distância ou presencial, sexo masculino, ou feminino."
 )
 selected_course = st.selectbox("Escolha um curso", course_names_list)
+
+
 selected_organization = st.selectbox("Escolha uma organização", organization_names_list)
 selected_modality = st.selectbox("Escolha a modalidade", course_modality)
-selected_network = st.selectbox("Escolha o tipo rede", course_network)
+
+if selected_modality == "Presencial":
+    selected_network = st.selectbox("Escolha o tipo rede: ", course_network)
+else:
+    selected_network = st.selectbox("Escolha o tipo rede", course_network)
 
 values = data_management.find_and_get_matching_courses(
     "NO_CURSO",
