@@ -150,27 +150,9 @@ def faixa_etaria():
     )
     
     if values is not None:
-        st.title("Faixa etária:")     
-    
-        qtd_matricula_0_17 = values[0][-8]
-        qtd_matricula_18_24 = values[0][-7]
-        qtd_matricula_25_29 = values[0][-6]
-        qtd_matricula_30_34 = values[0][-5]
-        qtd_matricula_35_39 = values[0][-4]
-        qtd_matricula_40_49 = values[0][-3]
-        qtd_matricula_50_59 = values[0][-2]
-        qtd_matricula_60_MAIS = values[0][-1]
+        st.title("Faixa etária:") 
 
-        st.write( 
-            'A faixa etaria de maior predominancia é: ' + max(qtd_matricula_0_17, 
-                                   qtd_matricula_18_24, 
-                                   qtd_matricula_25_29, 
-                                   qtd_matricula_30_34, 
-                                   qtd_matricula_35_39, 
-                                   qtd_matricula_40_49, 
-                                   qtd_matricula_50_59,
-                                   qtd_matricula_60_MAIS))
-
+        st.write(values)        
 
     
         # dataframe = pd.DataFrame({'Name': ['0_17', '18_24', '25_29', '30_34', '35_39', '40_49', '50_59', '60_MAIS'],
