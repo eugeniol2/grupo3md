@@ -4,6 +4,7 @@ from scipy import stats
 import data_management
 import mathFunctions
 import pandas as pd
+import matplotlib.pyplot as plt
 
 st.set_option("deprecation.showPyplotGlobalUse", False)
 
@@ -139,10 +140,60 @@ def faixa_etaria():
     "Abaixo é possível regular alguns filtros para obter melhores observações:"
     )
     st.write(
-    "Qual é a faixa etária predominante a depender do curso e região do país?"
+    "Qual é a faixa etária predominante a depender do curso?"
     )
     selected_course = st.selectbox("Escolha um curso", course_names_list)
-    selected_region = st.selectbox("Escolha uma regiao", region_names_list)
+
+    values = data_management.getValuesForAge(
+    "NO_CURSO",
+    searchName=selected_course
+    
+    )
+    if values is not None:
+        st.title("Faixa etária:")     
+    
+        qtd_matricula_0_17 = values[-8]
+        qtd_matricula_18_24 = values[-7]
+        qtd_matricula_25_29 = values[-6]
+        qtd_matricula_30_34 = values[-5]
+        qtd_matricula_35_39 = values[-4]
+        qtd_matricula_40_49 = values[-3]
+        qtd_matricula_50_59 = values[-2]
+        qtd_matricula_60_MAIS = values[-1]
+
+        # dataframe = pd.DataFrame({'Name': ['0_17', '18_24', '25_29', '30_34', '35_39', '40_49', '50_59', '60_MAIS'],
+        #                    "Qtd": [qtd_matricula_0_17, 
+        #                            qtd_matricula_18_24, 
+        #                            qtd_matricula_25_29, 
+        #                            qtd_matricula_30_34, 
+        #                            qtd_matricula_35_39, 
+        #                            qtd_matricula_40_49, 
+        #                            qtd_matricula_50_59,
+        #                            qtd_matricula_60_MAIS]})
+        
+        # dataframe.plot.pie(y='Qtd', figsize=(5,5))
+        
+        labels = '0_17', '18_24', '25_29', '30_34', '35_39', '40_49', '50_59', '60_MAIS'
+        sizes = [qtd_matricula_0_17, 
+                qtd_matricula_18_24, 
+                qtd_matricula_25_29, 
+                qtd_matricula_30_34, 
+                qtd_matricula_35_39, 
+                qtd_matricula_40_49, 
+                qtd_matricula_50_59,
+                qtd_matricula_60_MAIS]
+        # explode = (0, 0.1, 0, 0)  # only "explode" the 2nd slice (i.e. 'Hogs')
+
+        fig1, ax1 = plt.subplots()
+        ax1.pie(sizes, labels=labels, autopct='%1.1f%%',
+                shadow=True, startangle=90)
+        ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+
+        st.pyplot(fig1)
+
+
+        
+            
 
 
     
@@ -151,5 +202,5 @@ def faixa_etaria():
 
 if opcao_pergunta == 'Qual a taxa de evasão presente nos cursos?':
     taxa_evasao()
-elif opcao_pergunta == 'Qual é a faixa etária predominante a depender do curso e região do país?':
+elif opcao_pergunta == 'Qual é a faixa etária predominante a depender do curso?':
     faixa_etaria()

@@ -6,6 +6,28 @@ import streamlit as st
 censo2020 = pd.read_csv("data/censo2020_filtrado.csv")
 censo2021 = pd.read_csv("data/censo2021_filtrado.csv")
 
+def getValuesForAge(colum_name,searchName):
+    # Filtrar dados com base no nome do curso
+    course_data_2020 = censo2020[censo2020[colum_name] == searchName]
+    course_data_2021 = censo2021[censo2021[colum_name].str.upper() == searchName]
+
+    if not course_data_2020.empty and not course_data_2021.empty:
+        unique_codes_2020 = course_data_2020["CO_CURSO"].unique()
+        unique_codes_2021 = course_data_2021["CO_CURSO"].unique()
+        common_course_codes = np.intersect1d(unique_codes_2020, unique_codes_2021)
+
+        # Aplicar filtros adicionais
+        filtered_rows_2020 = censo2020[censo2020["CO_CURSO"].isin(common_course_codes)]
+        filtered_rows_2021 = censo2021[censo2021["CO_CURSO"].isin(common_course_codes)]
+
+        return [filtered_rows_2020, filtered_rows_2021]
+
+    else:
+        return None
+
+
+
+
 
 def getValuesForEvasion(objeto2020, objeto2021):
     merged_df = pd.merge(
