@@ -161,6 +161,18 @@ def faixa_etaria():
         qtd_matricula_50_59 = values[-2]
         qtd_matricula_60_MAIS = values[-1]
 
+        st.write( 
+            'A faixa etaria de maior predominancia é: ' + max(qtd_matricula_0_17, 
+                                   qtd_matricula_18_24, 
+                                   qtd_matricula_25_29, 
+                                   qtd_matricula_30_34, 
+                                   qtd_matricula_35_39, 
+                                   qtd_matricula_40_49, 
+                                   qtd_matricula_50_59,
+                                   qtd_matricula_60_MAIS))
+
+
+    
         # dataframe = pd.DataFrame({'Name': ['0_17', '18_24', '25_29', '30_34', '35_39', '40_49', '50_59', '60_MAIS'],
         #                    "Qtd": [qtd_matricula_0_17, 
         #                            qtd_matricula_18_24, 
@@ -173,23 +185,23 @@ def faixa_etaria():
         
         # dataframe.plot.pie(y='Qtd', figsize=(5,5))
         
-        labels = '0_17', '18_24', '25_29', '30_34', '35_39', '40_49', '50_59', '60_MAIS'
-        sizes = [qtd_matricula_0_17, 
-                qtd_matricula_18_24, 
-                qtd_matricula_25_29, 
-                qtd_matricula_30_34, 
-                qtd_matricula_35_39, 
-                qtd_matricula_40_49, 
-                qtd_matricula_50_59,
-                qtd_matricula_60_MAIS]
-        # explode = (0, 0.1, 0, 0)  # only "explode" the 2nd slice (i.e. 'Hogs')
+        # labels = '0_17', '18_24', '25_29', '30_34', '35_39', '40_49', '50_59', '60_MAIS'
+        # sizes = [qtd_matricula_0_17, 
+        #         qtd_matricula_18_24, 
+        #         qtd_matricula_25_29, 
+        #         qtd_matricula_30_34, 
+        #         qtd_matricula_35_39, 
+        #         qtd_matricula_40_49, 
+        #         qtd_matricula_50_59,
+        #         qtd_matricula_60_MAIS]
+        # # explode = (0, 0.1, 0, 0)  # only "explode" the 2nd slice (i.e. 'Hogs')
 
-        fig1, ax1 = plt.subplots()
-        ax1.pie(sizes, labels=labels, autopct='%1.1f%%',
-                shadow=True, startangle=90)
-        ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+        # fig1, ax1 = plt.subplots()
+        # ax1.pie(sizes, labels=labels, autopct='%1.1f%%',
+        #         shadow=True, startangle=90)
+        # ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
 
-        st.pyplot(fig1)
+        # st.pyplot(fig1)
 
 
         
