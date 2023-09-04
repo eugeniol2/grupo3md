@@ -147,19 +147,19 @@ def faixa_etaria():
     values = data_management.getValuesForAge(
     "NO_CURSO",
     searchName=selected_course
-    
     )
+    
     if values is not None:
         st.title("Faixa etária:")     
     
-        qtd_matricula_0_17 = values[-8]
-        qtd_matricula_18_24 = values[-7]
-        qtd_matricula_25_29 = values[-6]
-        qtd_matricula_30_34 = values[-5]
-        qtd_matricula_35_39 = values[-4]
-        qtd_matricula_40_49 = values[-3]
-        qtd_matricula_50_59 = values[-2]
-        qtd_matricula_60_MAIS = values[-1]
+        qtd_matricula_0_17 = values[0][-8]
+        qtd_matricula_18_24 = values[0][-7]
+        qtd_matricula_25_29 = values[0][-6]
+        qtd_matricula_30_34 = values[0][-5]
+        qtd_matricula_35_39 = values[0][-4]
+        qtd_matricula_40_49 = values[0][-3]
+        qtd_matricula_50_59 = values[0][-2]
+        qtd_matricula_60_MAIS = values[0][-1]
 
         st.write( 
             'A faixa etaria de maior predominancia é: ' + max(qtd_matricula_0_17, 
