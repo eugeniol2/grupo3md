@@ -6,6 +6,9 @@ import streamlit as st
 censo2020 = pd.read_csv("data/censo2020_filtrado.csv")
 censo2021 = pd.read_csv("data/censo2021_filtrado.csv")
 
+def testFunction():
+    return [censo2020, censo2021]
+
 def getValuesForAge(colum_name,searchName):
     # Filtrar dados com base no nome do curso
     course_data_2020 = censo2020[censo2020[colum_name] == searchName]
@@ -25,8 +28,7 @@ def getValuesForAge(colum_name,searchName):
     else:
         return None
 
-
-
+# print(getValuesForAge('NO_CURSO', 'ARTES'))
 
 
 def getValuesForEvasion(objeto2020, objeto2021):
@@ -43,7 +45,6 @@ def getColumUniqueNames(colum_name):
     unique_course_names = censo2020[colum_name].unique()
     course_names_list = np.unique(unique_course_names).tolist()
     return course_names_list
-
 
 # def find_and_get_matching_courses(colum_name, searchName):
 #     course_data_2020 = censo2020[censo2020[colum_name] == searchName]
@@ -64,8 +65,7 @@ def getColumUniqueNames(colum_name):
 #         return None, None
 
 
-def find_and_get_matching_courses(
-    colum_name, searchName, org_type=None, network_type=None, modality=None, gender=None
+def find_and_get_matching_courses(colum_name, searchName, org_type=None, network_type=None, modality=None, gender=None
 ):
     # Filtrar dados com base no nome do curso
     course_data_2020 = censo2020[censo2020[colum_name] == searchName]
