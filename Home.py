@@ -32,7 +32,8 @@ perguntas = [
     'Qual é a faixa etária predominante a depender do curso?',
     'Qual o turno mais disputado, manhã ou tarde?',
     'Qual curso possui mais matrículas realizadas?',
-    'Qual o curso mais requisitado por faixa etária?'
+    'Qual o curso mais requisitado por faixa etária?',
+    'Qual curso possui a menor e a maior taxa de evasão?'
 ]
 
 opcao_pergunta = st.selectbox(
@@ -60,7 +61,7 @@ def taxa_evasao():
     modality=selected_modality,
     network_type=selected_network,
     )
-    matching_rows_2020, matching_rows_2021 = values[1]
+
     abandonment_rates = []
     if values is not None:
         st.title("Taxa de evasão:")
@@ -73,7 +74,7 @@ def taxa_evasao():
             quantidade_ingressante = row_values[1]
             quantidade_matricula2020 = row_values[2]
             quantidade_ingressante2020 = row_values[3]
-
+            # st.write(row_values)
             abandonment_rate = mathFunctions.calcular_taxa_evasao(
                 {
                     "QT_MAT_2021": quantidade_matricula,
@@ -81,11 +82,13 @@ def taxa_evasao():
                     "QT_MAT_2020": quantidade_matricula2020,
                     "QT_ING_2020": quantidade_ingressante2020,
                 }
-            )
+            )            
             if abandonment_rate != None:
                 abandonment_rates.append(abandonment_rate)
         amountOfResults = len(abandonment_rates)
-        average_abandonment_rate = np.mean(abandonment_rates)
+        average_abandonment_rate = np.mean(abandonment_rates) * 100
+        average_abandonment_rate = max(0, min(average_abandonment_rate, 100))
+
         z_scores = np.abs(stats.zscore(abandonment_rates))
         z_score_threshold = 2
         valid_abandonment_rates_no_outliers = [
@@ -97,7 +100,7 @@ def taxa_evasao():
 
         st.subheader(f"Quantidade de dados encontrados: {amountOfResults}")
         st.subheader(f"Taxa de evasão {selected_course} em 2021:")
-        st.subheader(f"Taxa de evasão: {average_abandonment_rate * 100:.2f}%")
+        st.subheader(f"Taxa de evasão: {average_abandonment_rate:.2f}%")
         st.subheader(
             f"Taxa de evasão sem outliers: {mean_abandonment_rate_no_outliers*100:.2f}%"
         )
@@ -128,19 +131,6 @@ def taxa_evasao():
         \rbrack
         """
         )
-        columns_to_display_2020 = ["CO_CURSO", "QT_MAT", "QT_ING"]
-        columns_to_display_2021 = ["CO_CURSO", "QT_MAT", "QT_ING"]
-
-        mathFunctions.userCalculator()
-
-        st.title("Dados utilizados no calculo da média")
-        col1, col2 = st.columns(2)
-        with col1:
-            st.write("Dados de 2021:")
-            st.dataframe(matching_rows_2021[columns_to_display_2021])
-        with col2:
-            st.write("Dados de 2020:")
-            st.dataframe(matching_rows_2020[columns_to_display_2020])
     else:
         st.warning("Nenhum dado encontrado para o curso selecionado.")
     
@@ -250,7 +240,7 @@ def turno_disputado():
         
         # Create a pie chart
         fig, ax = plt.subplots()
-        ax.pie(shift_groups.values(), labels=shift_groups.keys(), autopct='%1.1f%%', startangle=90)
+        ax.pie(shift_groups.values(), labels=shift_groups.keys(), autopct=' %1.1f%%', startangle=90)
         ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
 
         # Display the pie chart using Streamlit
@@ -313,6 +303,62 @@ def maior_faixa_etaria():
         for age_group, largest_course in largest_courses.items():
             st.write("Na faixa etaria: "+age_group+ " o curso mais requisitado é o de: "+largest_course)    
 
+
+def max_min_taxa_evasao():        
+  
+    values = data_management.getRawdata()
+
+    # abandonment_rates = []
+    if values is not None:
+        
+       # Assuming you have values[0] and values[1] as CSV data for 2020 and 2021
+
+        # Load the CSV data into DataFrames
+        df_2020 = values[0]  # Replace with the actual file path
+        df_2021 = values[1]  # Replace with the actual file path
+
+        # st.write(values[0])
+        # Get a list of unique course names
+        unique_courses = df_2020["NO_CURSO"].unique()
+
+        # Initialize variables to keep track of the course with the lowest and highest evasion rates
+        lowest_evasion_rate = float("inf")
+        highest_evasion_rate = 0
+        course_with_lowest_evasion = None
+        course_with_highest_evasion = None
+
+        # Iterate through each course
+        for course in unique_courses:
+            # Filter data for the current course
+            course_data_2020 = df_2020[df_2020["NO_CURSO"] == course]
+            course_data_2021 = df_2021[df_2021["NO_CURSO"] == course]
+
+            # Calculate the evasion rate for the current course
+            evasion_rate = ((course_data_2020["QT_MAT"].sum() + course_data_2021["QT_MAT"].sum()) - course_data_2021["QT_ING"].sum()) / course_data_2020["QT_ING"].sum()
+
+            # Check if the current course has a valid evasion rate (between 1% and 100%)
+            if 0.01 < evasion_rate < 1:
+                if evasion_rate < lowest_evasion_rate:
+                    lowest_evasion_rate = evasion_rate
+                    course_with_lowest_evasion = course
+                if evasion_rate > highest_evasion_rate:
+                    highest_evasion_rate = evasion_rate
+                    course_with_highest_evasion = course
+
+        # Check if valid courses were found
+        if course_with_lowest_evasion:
+            # Print the course with the lowest evasion rate
+            st.write(f"O curso com a menor taxa de evasão é: {course_with_lowest_evasion} com taxa de evasão de {lowest_evasion_rate:.2%}")
+        else:
+            st.write("Nenhum curso com taxa de evasão válida foi encontrado.")
+
+        if course_with_highest_evasion:
+            # Print the course with the highest evasion rate
+            st.write(f"O curso com a maior taxa de evasão é: {course_with_highest_evasion} com taxa de evasão de {highest_evasion_rate:.2%}")
+        else:
+            st.write("Nenhum curso com taxa de evasão válida foi encontrado.")
+                
+
 if opcao_pergunta == perguntas[0]:
     taxa_evasao()
 elif opcao_pergunta == perguntas[1]:
@@ -323,3 +369,5 @@ elif opcao_pergunta == perguntas[3]:
     maior_matricula()
 elif opcao_pergunta == perguntas[4]:
     maior_faixa_etaria()
+elif( opcao_pergunta == perguntas[5]):
+    max_min_taxa_evasao()
