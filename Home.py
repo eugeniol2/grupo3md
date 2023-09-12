@@ -369,5 +369,5 @@ elif opcao_pergunta == perguntas[3]:
     maior_matricula()
 elif opcao_pergunta == perguntas[4]:
     maior_faixa_etaria()
-elif( opcao_pergunta == perguntas[5]):
+elif opcao_pergunta == perguntas[5]:
     max_min_taxa_evasao()
