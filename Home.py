@@ -21,16 +21,23 @@ course_modality = ["Todos", "Presencial", "Curso a distância"]
 
 course_network = ["Todos", "Pública", "Privada"]
 
+academic_degree= { 'Bacharelado' : '1', 'Licenciatura': '2', 'Tecnológico' : '3', 'Bacharelado e Licenciatura' : '4'}
+academic_degree_list = list(academic_degree.keys())
+
+
 region_names_list= data_management.getColumUniqueNames("NO_REGIAO")
 
 perguntas = [
     'Qual a taxa de evasão presente nos cursos?', 
-    'Qual é a faixa etária predominante a depender do curso?'
+    'Qual é a faixa etária predominante a depender do curso?',
+    'Qual o turno mais disputado, manhã ou tarde?',
+    'Qual curso possui mais matrículas realizadas?',
+    'Qual o curso mais requisitado por faixa etária?'
 ]
 
 opcao_pergunta = st.selectbox(
     'Selecione a pergunta: ',
-    (perguntas[0], perguntas[1])
+    perguntas
 )
 
 def taxa_evasao():        
@@ -208,15 +215,111 @@ def faixa_etaria():
         st.write('As faixas etárias de maior predominância são:', ', '.join(predominant_age_groups))
         
 
+def turno_disputado():
+    # Filtros
+    st.write('A depender do grau acadêmico e curso.')
+    st.subheader(
+    "Abaixo é possível regular alguns filtros para obter melhores observações:"
+    )
+    st.write(
+    "Qual é o turno mais disputado a depender do curso e grau academico?"
+    )
+    selected_academic_degree = st.selectbox("Escolha o grau academico", academic_degree_list)
+    selected_course = st.selectbox("Escolha um curso", course_names_list)
+
+    values = data_management.getValuesForShift(
+    "NO_CURSO",
+    searchName=selected_course,
+    grauAcademico=academic_degree[selected_academic_degree]
+    )
+
+    if values is not None:
+        st.title("Distribuição das Matrículas por Faixas Etárias:")   
+
+        values_df = pd.concat(values, ignore_index=True)
+
+        # # Calculate enrollment counts
+        qtd_mat_diurno = values_df['QT_MAT_DIURNO'].sum()
+        qtd_mat_noturno = values_df['QT_MAT_NOTURNO'].sum()
         
+        # # Create a dictionary of age groups and their counts
+        shift_groups = {
+            "Diurno": qtd_mat_diurno,
+            "Noturno": qtd_mat_noturno
+        }
+        
+        # Create a pie chart
+        fig, ax = plt.subplots()
+        ax.pie(shift_groups.values(), labels=shift_groups.keys(), autopct='%1.1f%%', startangle=90)
+        ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+
+        # Display the pie chart using Streamlit
+        st.pyplot(fig)
+
+        # Determine the most disputed shift
+        if qtd_mat_diurno > qtd_mat_noturno:
+            st.write('O turno mais disputado é: Diurno')
+        elif qtd_mat_diurno < qtd_mat_noturno:
+            st.write('O turno mais disputado é: Noturno')
+        else:
+            st.write('A distribuição dos turnos é igual')   
+
+
+def maior_matricula():
+    values = data_management.getRawdata()
+
+    if values is not None:
+        values_df = pd.concat(values, ignore_index=True)
+
+        # Find the index of the row with the largest 'QT_MAT'
+        max_index = values_df['QT_MAT'].idxmax()
+
+        # Get the course corresponding to the largest 'QT_MAT'
+        largest_course = values_df.loc[max_index, 'NO_CURSO']
+
+        st.title("O curso com mais matriculas é o de: "+largest_course)             
+
+def maior_faixa_etaria():
+    values = data_management.getRawdata()
+
+    if values is not None:
+        values_df = pd.concat(values, ignore_index=True)
+        
+        # Define the age group columns
+        age_group_columns = [
+            'QT_MAT_0_17',
+            'QT_MAT_18_24',
+            'QT_MAT_25_29',
+            'QT_MAT_30_34',
+            'QT_MAT_35_39',
+            'QT_MAT_40_49',
+            'QT_MAT_50_59',
+            'QT_MAT_60_MAIS'
+        ]
+
+        # Initialize a dictionary to store the largest course for each age group
+        largest_courses = {}
+
+        # Iterate through the age group columns
+        for age_group_column in age_group_columns:
+            # Find the course with the largest enrollment count for the current age group
+            max_index = values_df[age_group_column].idxmax()
+            largest_course = values_df.loc[max_index, 'NO_CURSO']
             
+            # Store the largest course in the dictionary
+            largest_courses[age_group_column] = largest_course
 
-
-    
-   
-
+        # Print the largest courses for each age group
+        for age_group, largest_course in largest_courses.items():
+            st.write("Na faixa etaria: "+age_group+ " o curso mais requisitado é o de: "+largest_course)    
 
 if opcao_pergunta == perguntas[0]:
     taxa_evasao()
 elif opcao_pergunta == perguntas[1]:
     faixa_etaria()
+elif opcao_pergunta == perguntas[2]:
+    turno_disputado()
+elif opcao_pergunta == perguntas[3]:
+    maior_matricula()
+elif opcao_pergunta == perguntas[4]:
+    maior_faixa_etaria()
